@@ -31,7 +31,7 @@ cp .env.example .env
 4. Configure your environment variables in `.env`:
 ```env
 # Application
-PORT=3001
+PORT=3000
 NODE_ENV=development
 
 # Database
@@ -68,21 +68,21 @@ npm run start:dev
 
 1. Register a new user:
 ```bash
-curl -X POST http://localhost:3001/auth/register \
+curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"your_password"}'
 ```
 
 2. Login to get JWT token:
 ```bash
-curl -X POST http://localhost:3001/auth/login \
+curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"your_password"}'
 ```
 
 3. Add a new friend (use the token from previous step):
 ```bash
-curl -X POST http://localhost:3001/friends \
+curl -X POST http://localhost:3000/friends \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name":"John Doe","notes":"Met at conference"}'
