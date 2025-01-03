@@ -30,4 +30,4 @@ describe('InteractionType', () => {
       ['NEUTRAL', 'neutral'],
     ]);
   });
-}); 
+});

@@ -4,7 +4,11 @@ import { PersonalityService } from './personality.service';
 import { CreatePersonalityDto } from './dto/create-personality.dto';
 import { UpdatePersonalityDto } from './dto/update-personality.dto';
 import { User } from '../users/entities/user.entity';
-import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Personality } from './entities/personality.entity';
 
 describe('PersonalityController', () => {
@@ -104,24 +108,30 @@ describe('PersonalityController', () => {
       const result = await controller.create('1', createDto, mockUser as User);
 
       expect(result).toEqual(mockPersonality);
-      expect(service.create).toHaveBeenCalledWith('1', createDto, mockUser as User);
+      expect(service.create).toHaveBeenCalledWith(
+        '1',
+        createDto,
+        mockUser as User,
+      );
       expect(service.create).toHaveBeenCalledTimes(1);
     });
 
     it('should handle ConflictException', async () => {
       jest.spyOn(service, 'create').mockRejectedValue(new ConflictException());
 
-      await expect(controller.create('1', createDto, mockUser as User)).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(
+        controller.create('1', createDto, mockUser as User),
+      ).rejects.toThrow(ConflictException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'create').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'create')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.create('1', createDto, mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.create('1', createDto, mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -143,7 +153,9 @@ describe('PersonalityController', () => {
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'findOne').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
 
       await expect(controller.findOne('1', mockUser as User)).rejects.toThrow(
         UnauthorizedException,
@@ -161,7 +173,11 @@ describe('PersonalityController', () => {
       const result = await controller.update('1', updateDto, mockUser as User);
 
       expect(result).toEqual(mockPersonality);
-      expect(service.update).toHaveBeenCalledWith('1', updateDto, mockUser as User);
+      expect(service.update).toHaveBeenCalledWith(
+        '1',
+        updateDto,
+        mockUser as User,
+      );
       expect(service.update).toHaveBeenCalledTimes(1);
     });
 
@@ -171,9 +187,15 @@ describe('PersonalityController', () => {
         ...mockPersonality,
         openness: 90,
       };
-      jest.spyOn(service, 'update').mockResolvedValue(expectedUpdate as Personality);
+      jest
+        .spyOn(service, 'update')
+        .mockResolvedValue(expectedUpdate as Personality);
 
-      const result = await controller.update('1', partialUpdateDto, mockUser as User);
+      const result = await controller.update(
+        '1',
+        partialUpdateDto,
+        mockUser as User,
+      );
 
       expect(result.openness).toBe(90);
       expect(result.conscientiousness).toBe(mockPersonality.conscientiousness);
@@ -182,17 +204,19 @@ describe('PersonalityController', () => {
     it('should handle NotFoundException', async () => {
       jest.spyOn(service, 'update').mockRejectedValue(new NotFoundException());
 
-      await expect(controller.update('999', updateDto, mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.update('999', updateDto, mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'update').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'update')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.update('1', updateDto, mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.update('1', updateDto, mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -214,7 +238,9 @@ describe('PersonalityController', () => {
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'remove').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'remove')
+        .mockRejectedValue(new UnauthorizedException());
 
       await expect(controller.remove('1', mockUser as User)).rejects.toThrow(
         UnauthorizedException,
@@ -227,24 +253,31 @@ describe('PersonalityController', () => {
       const result = await controller.getAnalysis('1', mockUser as User);
 
       expect(result).toEqual(mockAnalysis);
-      expect(service.getPersonalityAnalysis).toHaveBeenCalledWith('1', mockUser as User);
+      expect(service.getPersonalityAnalysis).toHaveBeenCalledWith(
+        '1',
+        mockUser as User,
+      );
       expect(service.getPersonalityAnalysis).toHaveBeenCalledTimes(1);
     });
 
     it('should handle NotFoundException', async () => {
-      jest.spyOn(service, 'getPersonalityAnalysis').mockRejectedValue(new NotFoundException());
+      jest
+        .spyOn(service, 'getPersonalityAnalysis')
+        .mockRejectedValue(new NotFoundException());
 
-      await expect(controller.getAnalysis('999', mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.getAnalysis('999', mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'getPersonalityAnalysis').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'getPersonalityAnalysis')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.getAnalysis('1', mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.getAnalysis('1', mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -258,53 +291,71 @@ describe('PersonalityController', () => {
     });
 
     it('should handle NotFoundException', async () => {
-      jest.spyOn(service, 'getMBTIType').mockRejectedValue(new NotFoundException());
+      jest
+        .spyOn(service, 'getMBTIType')
+        .mockRejectedValue(new NotFoundException());
 
-      await expect(controller.getMBTIType('999', mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.getMBTIType('999', mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'getMBTIType').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'getMBTIType')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.getMBTIType('1', mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.getMBTIType('1', mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('getCompatibility', () => {
     it('should return compatibility score', async () => {
-      const result = await controller.getCompatibility('1', '2', mockUser as User);
+      const result = await controller.getCompatibility(
+        '1',
+        '2',
+        mockUser as User,
+      );
 
       expect(result).toBe(85);
-      expect(service.getCompatibilityScore).toHaveBeenCalledWith('1', '2', mockUser as User);
+      expect(service.getCompatibilityScore).toHaveBeenCalledWith(
+        '1',
+        '2',
+        mockUser as User,
+      );
       expect(service.getCompatibilityScore).toHaveBeenCalledTimes(1);
     });
 
     it('should handle NotFoundException', async () => {
-      jest.spyOn(service, 'getCompatibilityScore').mockRejectedValue(new NotFoundException());
+      jest
+        .spyOn(service, 'getCompatibilityScore')
+        .mockRejectedValue(new NotFoundException());
 
-      await expect(controller.getCompatibility('999', '2', mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.getCompatibility('999', '2', mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'getCompatibilityScore').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'getCompatibilityScore')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.getCompatibility('1', '2', mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.getCompatibility('1', '2', mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should handle invalid compatibility requests', async () => {
-      jest.spyOn(service, 'getCompatibilityScore').mockRejectedValue(new NotFoundException());
+      jest
+        .spyOn(service, 'getCompatibilityScore')
+        .mockRejectedValue(new NotFoundException());
 
-      await expect(controller.getCompatibility('1', '1', mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.getCompatibility('1', '1', mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
   });
-}); 
+});

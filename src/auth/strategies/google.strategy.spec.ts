@@ -112,7 +112,12 @@ describe('GoogleStrategy', () => {
         id: 'google-id-123',
       };
 
-      await strategy.validate(accessToken, refreshToken, incompleteProfile, done);
+      await strategy.validate(
+        accessToken,
+        refreshToken,
+        incompleteProfile,
+        done,
+      );
 
       expect(done).toHaveBeenCalledWith(null, {
         email: undefined,
@@ -138,7 +143,12 @@ describe('GoogleStrategy', () => {
         photos: [],
       };
 
-      await strategy.validate(accessToken, refreshToken, profileWithEmptyArrays, done);
+      await strategy.validate(
+        accessToken,
+        refreshToken,
+        profileWithEmptyArrays,
+        done,
+      );
 
       expect(done).toHaveBeenCalledWith(null, {
         email: undefined,
@@ -161,7 +171,12 @@ describe('GoogleStrategy', () => {
         photos: null,
       };
 
-      await strategy.validate(accessToken, refreshToken, profileWithNulls, done);
+      await strategy.validate(
+        accessToken,
+        refreshToken,
+        profileWithNulls,
+        done,
+      );
 
       expect(done).toHaveBeenCalledWith(null, {
         email: undefined,
@@ -173,4 +188,4 @@ describe('GoogleStrategy', () => {
       });
     });
   });
-}); 
+});

@@ -6,10 +6,7 @@ import { PersonalityController } from './personality.controller';
 import { FriendsModule } from '../friends/friends.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Personality]),
-    FriendsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Personality]), FriendsModule],
   providers: [PersonalityService],
   controllers: [PersonalityController],
   exports: [PersonalityService],

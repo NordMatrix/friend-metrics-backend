@@ -3,7 +3,9 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 // MBTI characteristics (-100 to 100)
 export class UpdatePersonalityDto {
-  @ApiPropertyOptional({ description: 'Extraversion (-100) to Introversion (100)' })
+  @ApiPropertyOptional({
+    description: 'Extraversion (-100) to Introversion (100)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(-100)
@@ -66,4 +68,4 @@ export class UpdatePersonalityDto {
   @Min(0)
   @Max(100)
   neuroticism?: number;
-} 
+}

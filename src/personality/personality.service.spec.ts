@@ -6,7 +6,11 @@ import { Personality } from './entities/personality.entity';
 import { FriendsService } from '../friends/friends.service';
 import { CreatePersonalityDto } from './dto/create-personality.dto';
 import { UpdatePersonalityDto } from './dto/update-personality.dto';
-import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { Friend } from '../friends/entities/friend.entity';
 
@@ -114,9 +118,9 @@ describe('PersonalityService', () => {
 
     it('should create a personality profile', async () => {
       jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(null);
-      
+
       const result = await service.create('1', createDto, mockUser as User);
-      
+
       expect(result).toEqual(mockPersonality);
       expect(personalityRepository.create).toHaveBeenCalledWith({
         ...createDto,
@@ -125,50 +129,60 @@ describe('PersonalityService', () => {
     });
 
     it('should throw ConflictException if personality profile already exists', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
-      await expect(service.create('1', createDto, mockUser as User)).rejects.toThrow(
-        ConflictException,
-      );
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
+      await expect(
+        service.create('1', createDto, mockUser as User),
+      ).rejects.toThrow(ConflictException);
     });
 
     it('should throw UnauthorizedException if user does not own the friend', async () => {
-      jest.spyOn(friendsService, 'findOne').mockRejectedValue(new UnauthorizedException());
-      
-      await expect(service.create('1', createDto, mockOtherUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      jest
+        .spyOn(friendsService, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
+
+      await expect(
+        service.create('1', createDto, mockOtherUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw NotFoundException if friend does not exist', async () => {
-      jest.spyOn(friendsService, 'findOne').mockRejectedValue(new NotFoundException());
-      
-      await expect(service.create('999', createDto, mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      jest
+        .spyOn(friendsService, 'findOne')
+        .mockRejectedValue(new NotFoundException());
+
+      await expect(
+        service.create('999', createDto, mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('findOne', () => {
     it('should return a personality profile', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
       const result = await service.findOne('1', mockUser as User);
-      
+
       expect(result).toEqual(mockPersonality);
     });
 
     it('should throw NotFoundException if personality profile not found', async () => {
       jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(null);
-      
+
       await expect(service.findOne('1', mockUser as User)).rejects.toThrow(
         NotFoundException,
       );
     });
 
     it('should throw UnauthorizedException if user does not own the friend', async () => {
-      jest.spyOn(friendsService, 'findOne').mockRejectedValue(new UnauthorizedException());
-      
+      jest
+        .spyOn(friendsService, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
+
       await expect(service.findOne('1', mockOtherUser as User)).rejects.toThrow(
         UnauthorizedException,
       );
@@ -182,39 +196,53 @@ describe('PersonalityService', () => {
     };
 
     it('should update a personality profile', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
       const updatedPersonality = { ...mockPersonality, ...updateDto };
-      jest.spyOn(personalityRepository, 'save').mockResolvedValue(updatedPersonality);
-      
+      jest
+        .spyOn(personalityRepository, 'save')
+        .mockResolvedValue(updatedPersonality);
+
       const result = await service.update('1', updateDto, mockUser as User);
-      
+
       expect(result).toEqual(updatedPersonality);
     });
 
     it('should throw NotFoundException if personality profile not found', async () => {
       jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(null);
-      
-      await expect(service.update('1', updateDto, mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+
+      await expect(
+        service.update('1', updateDto, mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw UnauthorizedException if user does not own the friend', async () => {
-      jest.spyOn(friendsService, 'findOne').mockRejectedValue(new UnauthorizedException());
-      
-      await expect(service.update('1', updateDto, mockOtherUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      jest
+        .spyOn(friendsService, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
+
+      await expect(
+        service.update('1', updateDto, mockOtherUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should update only specified fields', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
       const partialUpdateDto: UpdatePersonalityDto = { openness: 90 };
       const expectedUpdate = { ...mockPersonality, openness: 90 };
-      jest.spyOn(personalityRepository, 'save').mockResolvedValue(expectedUpdate);
-      
-      const result = await service.update('1', partialUpdateDto, mockUser as User);
-      
+      jest
+        .spyOn(personalityRepository, 'save')
+        .mockResolvedValue(expectedUpdate);
+
+      const result = await service.update(
+        '1',
+        partialUpdateDto,
+        mockUser as User,
+      );
+
       expect(result.openness).toBe(90);
       expect(result.conscientiousness).toBe(mockPersonality.conscientiousness);
     });
@@ -222,24 +250,30 @@ describe('PersonalityService', () => {
 
   describe('remove', () => {
     it('should remove a personality profile', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
       await service.remove('1', mockUser as User);
-      
-      expect(personalityRepository.remove).toHaveBeenCalledWith(mockPersonality);
+
+      expect(personalityRepository.remove).toHaveBeenCalledWith(
+        mockPersonality,
+      );
     });
 
     it('should throw NotFoundException if personality profile not found', async () => {
       jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(null);
-      
+
       await expect(service.remove('1', mockUser as User)).rejects.toThrow(
         NotFoundException,
       );
     });
 
     it('should throw UnauthorizedException if user does not own the friend', async () => {
-      jest.spyOn(friendsService, 'findOne').mockRejectedValue(new UnauthorizedException());
-      
+      jest
+        .spyOn(friendsService, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
+
       await expect(service.remove('1', mockOtherUser as User)).rejects.toThrow(
         UnauthorizedException,
       );
@@ -259,9 +293,13 @@ describe('PersonalityService', () => {
         .spyOn(personalityRepository, 'findOne')
         .mockResolvedValueOnce(mockPersonality)
         .mockResolvedValueOnce(mockPersonality2);
-      
-      const result = await service.getCompatibilityScore('1', '2', mockUser as User);
-      
+
+      const result = await service.getCompatibilityScore(
+        '1',
+        '2',
+        mockUser as User,
+      );
+
       expect(result).toBeDefined();
       expect(typeof result).toBe('number');
       expect(result).toBeGreaterThanOrEqual(0);
@@ -273,18 +311,20 @@ describe('PersonalityService', () => {
         .spyOn(personalityRepository, 'findOne')
         .mockResolvedValueOnce(mockPersonality)
         .mockResolvedValueOnce(null);
-      
-      await expect(service.getCompatibilityScore('1', '2', mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+
+      await expect(
+        service.getCompatibilityScore('1', '2', mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw UnauthorizedException if user does not own either friend', async () => {
-      jest.spyOn(friendsService, 'findOne').mockRejectedValue(new UnauthorizedException());
-      
-      await expect(service.getCompatibilityScore('1', '2', mockOtherUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      jest
+        .spyOn(friendsService, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
+
+      await expect(
+        service.getCompatibilityScore('1', '2', mockOtherUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should calculate different scores for different personality combinations', async () => {
@@ -314,21 +354,28 @@ describe('PersonalityService', () => {
         neuroticism: 0,
       };
 
-      jest.spyOn(personalityRepository, 'findOne')
+      jest
+        .spyOn(personalityRepository, 'findOne')
         .mockResolvedValueOnce(personality1)
         .mockResolvedValueOnce(personality2);
 
-      const score = await service.getCompatibilityScore('1', '2', mockUser as User);
+      const score = await service.getCompatibilityScore(
+        '1',
+        '2',
+        mockUser as User,
+      );
       expect(score).toBe(0); // Maximum difference should result in 0% compatibility
     });
   });
 
   describe('getMBTIType', () => {
     it('should return MBTI type', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
       const result = await service.getMBTIType('1', mockUser as User);
-      
+
       expect(result).toBeDefined();
       expect(result).toMatch(/^[EI][SN][TF][JP]$/);
     });
@@ -341,10 +388,12 @@ describe('PersonalityService', () => {
         thinkingFeeling: 50,
         judgingPerceiving: 50,
       };
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(positivePersonality);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(positivePersonality);
+
       const result = await service.getMBTIType('1', mockUser as User);
-      
+
       expect(result).toBe('ESTJ');
     });
 
@@ -356,30 +405,42 @@ describe('PersonalityService', () => {
         thinkingFeeling: -50,
         judgingPerceiving: -50,
       };
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(negativePersonality);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(negativePersonality);
+
       const result = await service.getMBTIType('1', mockUser as User);
-      
+
       expect(result).toBe('INFP');
     });
   });
 
   describe('getPersonalityAnalysis', () => {
     it('should return personality analysis', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
-      const result = await service.getPersonalityAnalysis('1', mockUser as User);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
+      const result = await service.getPersonalityAnalysis(
+        '1',
+        mockUser as User,
+      );
+
       expect(result).toHaveProperty('mbtiType');
       expect(result).toHaveProperty('mbtiScores');
       expect(result).toHaveProperty('bigFiveScores');
     });
 
     it('should return correct MBTI scores', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
-      const result = await service.getPersonalityAnalysis('1', mockUser as User);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
+      const result = await service.getPersonalityAnalysis(
+        '1',
+        mockUser as User,
+      );
+
       expect(result.mbtiScores).toEqual({
         extroversionIntroversion: mockPersonality.extroversionIntroversion,
         sensingIntuition: mockPersonality.sensingIntuition,
@@ -389,10 +450,15 @@ describe('PersonalityService', () => {
     });
 
     it('should return correct Big Five scores', async () => {
-      jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(mockPersonality);
-      
-      const result = await service.getPersonalityAnalysis('1', mockUser as User);
-      
+      jest
+        .spyOn(personalityRepository, 'findOne')
+        .mockResolvedValue(mockPersonality);
+
+      const result = await service.getPersonalityAnalysis(
+        '1',
+        mockUser as User,
+      );
+
       expect(result.bigFiveScores).toEqual({
         openness: mockPersonality.openness,
         conscientiousness: mockPersonality.conscientiousness,
@@ -404,10 +470,10 @@ describe('PersonalityService', () => {
 
     it('should throw NotFoundException if personality profile not found', async () => {
       jest.spyOn(personalityRepository, 'findOne').mockResolvedValue(null);
-      
-      await expect(service.getPersonalityAnalysis('1', mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+
+      await expect(
+        service.getPersonalityAnalysis('1', mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
   });
-}); 
+});

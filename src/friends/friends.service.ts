@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Friend } from './entities/friend.entity';
@@ -46,7 +51,11 @@ export class FriendsService {
     return friend;
   }
 
-  async update(id: string, updateFriendDto: UpdateFriendDto, user: User): Promise<Friend> {
+  async update(
+    id: string,
+    updateFriendDto: UpdateFriendDto,
+    user: User,
+  ): Promise<Friend> {
     const friend = await this.findOne(id, user);
     Object.assign(friend, updateFriendDto);
     return this.friendRepository.save(friend);
@@ -57,14 +66,23 @@ export class FriendsService {
     await this.friendRepository.remove(friend);
   }
 
-  async updateScore(id: string, updateScoreDto: UpdateScoreDto, user: User): Promise<Friend> {
+  async updateScore(
+    id: string,
+    updateScoreDto: UpdateScoreDto,
+    user: User,
+  ): Promise<Friend> {
     const friend = await this.findOne(id, user);
 
     if (updateScoreDto.scoreChange < -100 || updateScoreDto.scoreChange > 100) {
-      throw new BadRequestException('Score change must be between -100 and 100');
+      throw new BadRequestException(
+        'Score change must be between -100 and 100',
+      );
     }
 
-    friend.relationshipScore = Math.max(0, Math.min(100, friend.relationshipScore + updateScoreDto.scoreChange));
+    friend.relationshipScore = Math.max(
+      0,
+      Math.min(100, friend.relationshipScore + updateScoreDto.scoreChange),
+    );
     return this.friendRepository.save(friend);
   }
-} 
+}

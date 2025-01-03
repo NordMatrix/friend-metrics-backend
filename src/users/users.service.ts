@@ -30,4 +30,4 @@ export class UsersService {
   async validatePassword(user: User, password: string): Promise<boolean> {
     return bcrypt.compare(password, user.password);
   }
-} 
+}

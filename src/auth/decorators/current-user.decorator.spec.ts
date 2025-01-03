@@ -104,4 +104,4 @@ describe('getCurrentUser', () => {
     expect(mockExecutionContext.switchToHttp).toHaveBeenCalled();
     expect(mockExecutionContext.switchToHttp().getRequest).toHaveBeenCalled();
   });
-}); 
+});

@@ -12,8 +12,8 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Register new user' })
   @ApiBody({ type: RegisterDto })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'User successfully registered',
     schema: {
       properties: {
@@ -23,15 +23,18 @@ export class AuthController {
             id: { type: 'string' },
             email: { type: 'string' },
             firstName: { type: 'string' },
-            lastName: { type: 'string' }
-          }
+            lastName: { type: 'string' },
+          },
         },
-        token: { type: 'string' }
-      }
-    }
+        token: { type: 'string' },
+      },
+    },
   })
   @ApiResponse({ status: 400, description: 'Invalid data' })
-  @ApiResponse({ status: 409, description: 'User with this email already exists' })
+  @ApiResponse({
+    status: 409,
+    description: 'User with this email already exists',
+  })
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
@@ -39,8 +42,8 @@ export class AuthController {
 
   @ApiOperation({ summary: 'User login' })
   @ApiBody({ type: LoginDto })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Successfully logged in',
     schema: {
       properties: {
@@ -50,12 +53,12 @@ export class AuthController {
             id: { type: 'string' },
             email: { type: 'string' },
             firstName: { type: 'string' },
-            lastName: { type: 'string' }
-          }
+            lastName: { type: 'string' },
+          },
         },
-        token: { type: 'string' }
-      }
-    }
+        token: { type: 'string' },
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @Post('login')
@@ -64,7 +67,10 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Google OAuth login' })
-  @ApiResponse({ status: 302, description: 'Redirect to Google authentication page' })
+  @ApiResponse({
+    status: 302,
+    description: 'Redirect to Google authentication page',
+  })
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
@@ -72,8 +78,8 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Google OAuth callback' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Successfully logged in with Google',
     schema: {
       properties: {
@@ -83,16 +89,16 @@ export class AuthController {
             id: { type: 'string' },
             email: { type: 'string' },
             firstName: { type: 'string' },
-            lastName: { type: 'string' }
-          }
+            lastName: { type: 'string' },
+          },
         },
-        token: { type: 'string' }
-      }
-    }
+        token: { type: 'string' },
+      },
+    },
   })
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req) {
     return this.authService.googleLogin(req.user);
   }
-} 
+}

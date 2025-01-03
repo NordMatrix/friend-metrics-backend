@@ -35,9 +35,9 @@ describe('AppController', () => {
     it('should return custom message from service', () => {
       const customMessage = 'Custom Hello!';
       jest.spyOn(service, 'getHello').mockReturnValue(customMessage);
-      
+
       const result = controller.getHello();
-      
+
       expect(result).toBe(customMessage);
       expect(service.getHello).toHaveBeenCalled();
     });

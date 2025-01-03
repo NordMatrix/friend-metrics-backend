@@ -1,4 +1,3 @@
-import { Test } from '@nestjs/testing';
 import databaseConfig from './database.config';
 
 describe('DatabaseConfig', () => {
@@ -33,7 +32,28 @@ describe('DatabaseConfig', () => {
       database: 'test_db',
       entities: expect.any(Array),
       synchronize: true,
-      logging: true,
+      logging: false,
     });
   });
-}); 
+
+  it('should handle missing environment variables', () => {
+    delete process.env.DB_HOST;
+    delete process.env.DB_PORT;
+    delete process.env.DB_USERNAME;
+    delete process.env.DB_PASSWORD;
+    delete process.env.DB_NAME;
+
+    const config = databaseConfig();
+    expect(config).toEqual({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'friend_metrics',
+      entities: expect.any(Array),
+      synchronize: true,
+      logging: false,
+    });
+  });
+});

@@ -40,7 +40,9 @@ describe('FriendsController', () => {
     findOne: jest.fn().mockResolvedValue(mockFriend),
     update: jest.fn().mockResolvedValue(mockFriend),
     remove: jest.fn().mockResolvedValue(undefined),
-    updateScore: jest.fn().mockResolvedValue({ ...mockFriend, relationshipScore: 5 }),
+    updateScore: jest
+      .fn()
+      .mockResolvedValue({ ...mockFriend, relationshipScore: 5 }),
   };
 
   beforeEach(async () => {
@@ -109,7 +111,9 @@ describe('FriendsController', () => {
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'findOne').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'findOne')
+        .mockRejectedValue(new UnauthorizedException());
 
       await expect(controller.findOne('1', mockUser as User)).rejects.toThrow(
         UnauthorizedException,
@@ -127,7 +131,11 @@ describe('FriendsController', () => {
       const result = await controller.update('1', updateDto, mockUser as User);
 
       expect(result).toEqual(mockFriend);
-      expect(service.update).toHaveBeenCalledWith('1', updateDto, mockUser as User);
+      expect(service.update).toHaveBeenCalledWith(
+        '1',
+        updateDto,
+        mockUser as User,
+      );
       expect(service.update).toHaveBeenCalledTimes(1);
     });
 
@@ -136,7 +144,11 @@ describe('FriendsController', () => {
       const expectedUpdate = { ...mockFriend, name: 'Updated Friend' };
       jest.spyOn(service, 'update').mockResolvedValue(expectedUpdate as Friend);
 
-      const result = await controller.update('1', partialUpdateDto, mockUser as User);
+      const result = await controller.update(
+        '1',
+        partialUpdateDto,
+        mockUser as User,
+      );
 
       expect(result.name).toBe('Updated Friend');
       expect(result.notes).toBe(mockFriend.notes);
@@ -145,17 +157,19 @@ describe('FriendsController', () => {
     it('should handle NotFoundException', async () => {
       jest.spyOn(service, 'update').mockRejectedValue(new NotFoundException());
 
-      await expect(controller.update('999', updateDto, mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.update('999', updateDto, mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'update').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'update')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.update('1', updateDto, mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.update('1', updateDto, mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -177,7 +191,9 @@ describe('FriendsController', () => {
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'remove').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'remove')
+        .mockRejectedValue(new UnauthorizedException());
 
       await expect(controller.remove('1', mockUser as User)).rejects.toThrow(
         UnauthorizedException,
@@ -191,27 +207,39 @@ describe('FriendsController', () => {
     };
 
     it('should update friend score', async () => {
-      const result = await controller.updateScore('1', updateScoreDto, mockUser as User);
+      const result = await controller.updateScore(
+        '1',
+        updateScoreDto,
+        mockUser as User,
+      );
 
       expect(result.relationshipScore).toBe(5);
-      expect(service.updateScore).toHaveBeenCalledWith('1', updateScoreDto, mockUser as User);
+      expect(service.updateScore).toHaveBeenCalledWith(
+        '1',
+        updateScoreDto,
+        mockUser as User,
+      );
       expect(service.updateScore).toHaveBeenCalledTimes(1);
     });
 
     it('should handle NotFoundException', async () => {
-      jest.spyOn(service, 'updateScore').mockRejectedValue(new NotFoundException());
+      jest
+        .spyOn(service, 'updateScore')
+        .mockRejectedValue(new NotFoundException());
 
-      await expect(controller.updateScore('999', updateScoreDto, mockUser as User)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.updateScore('999', updateScoreDto, mockUser as User),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should handle UnauthorizedException', async () => {
-      jest.spyOn(service, 'updateScore').mockRejectedValue(new UnauthorizedException());
+      jest
+        .spyOn(service, 'updateScore')
+        .mockRejectedValue(new UnauthorizedException());
 
-      await expect(controller.updateScore('1', updateScoreDto, mockUser as User)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.updateScore('1', updateScoreDto, mockUser as User),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should validate score range', async () => {
@@ -219,7 +247,9 @@ describe('FriendsController', () => {
         scoreChange: 150, // Score should be between -100 and 100
       };
 
-      await expect(controller.updateScore('1', invalidScoreDto, mockUser as User)).rejects.toThrow();
+      await expect(
+        controller.updateScore('1', invalidScoreDto, mockUser as User),
+      ).rejects.toThrow();
     });
   });
-}); 
+});

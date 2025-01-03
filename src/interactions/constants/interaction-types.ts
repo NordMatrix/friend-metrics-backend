@@ -10,4 +10,5 @@ export const InteractionTypes = {
   OTHER: 'other',
 } as const;
 
-export type InteractionType = typeof InteractionTypes[keyof typeof InteractionTypes]; 
+export type InteractionType =
+  (typeof InteractionTypes)[keyof typeof InteractionTypes];

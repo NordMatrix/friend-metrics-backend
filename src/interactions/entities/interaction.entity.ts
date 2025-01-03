@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { Friend } from '../../friends/entities/friend.entity';
 
 @Entity()
@@ -20,4 +26,4 @@ export class Interaction {
 
   @CreateDateColumn()
   createdAt: Date;
-} 
+}

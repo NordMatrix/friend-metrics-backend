@@ -1,5 +1,14 @@
-import { IsString, IsNumber, IsOptional, IsObject, IsEnum } from 'class-validator';
-import { InteractionTypes, InteractionType } from '../constants/interaction-types';
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsObject,
+  IsEnum,
+} from 'class-validator';
+import {
+  InteractionTypes,
+  InteractionType,
+} from '../constants/interaction-types';
 
 export class CreateInteractionDto {
   @IsEnum(InteractionTypes)
@@ -15,4 +24,4 @@ export class CreateInteractionDto {
   @IsObject()
   @IsOptional()
   metadata?: Record<string, any>;
-} 
+}

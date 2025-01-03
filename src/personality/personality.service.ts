@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Personality } from './entities/personality.entity';
@@ -16,7 +20,11 @@ export class PersonalityService {
     private readonly friendsService: FriendsService,
   ) {}
 
-  async create(friendId: string, createPersonalityDto: CreatePersonalityDto, user: User): Promise<Personality> {
+  async create(
+    friendId: string,
+    createPersonalityDto: CreatePersonalityDto,
+    user: User,
+  ): Promise<Personality> {
     // Check friend existence and access rights
     const friend = await this.friendsService.findOne(friendId, user);
 
@@ -26,7 +34,9 @@ export class PersonalityService {
     });
 
     if (existingPersonality) {
-      throw new ConflictException('Personality profile already exists for this friend');
+      throw new ConflictException(
+        'Personality profile already exists for this friend',
+      );
     }
 
     const personality = this.personalityRepository.create({
@@ -52,7 +62,11 @@ export class PersonalityService {
     return personality;
   }
 
-  async update(friendId: string, updatePersonalityDto: UpdatePersonalityDto, user: User): Promise<Personality> {
+  async update(
+    friendId: string,
+    updatePersonalityDto: UpdatePersonalityDto,
+    user: User,
+  ): Promise<Personality> {
     const personality = await this.findOne(friendId, user);
     Object.assign(personality, updatePersonalityDto);
     return this.personalityRepository.save(personality);
@@ -63,7 +77,11 @@ export class PersonalityService {
     await this.personalityRepository.remove(personality);
   }
 
-  async getCompatibilityScore(friendId: string, otherFriendId: string, user: User): Promise<number> {
+  async getCompatibilityScore(
+    friendId: string,
+    otherFriendId: string,
+    user: User,
+  ): Promise<number> {
     // Check friend existence and access rights
     const [friend1Personality, friend2Personality] = await Promise.all([
       this.findOne(friendId, user),
@@ -111,32 +129,53 @@ export class PersonalityService {
     };
   }
 
-  private calculateMBTICompatibility(personality1: Personality, personality2: Personality): number {
+  private calculateMBTICompatibility(
+    personality1: Personality,
+    personality2: Personality,
+  ): number {
     // Calculate difference for each MBTI scale
     const differences = {
-      ei: Math.abs(personality1.extroversionIntroversion - personality2.extroversionIntroversion),
-      sn: Math.abs(personality1.sensingIntuition - personality2.sensingIntuition),
+      ei: Math.abs(
+        personality1.extroversionIntroversion -
+          personality2.extroversionIntroversion,
+      ),
+      sn: Math.abs(
+        personality1.sensingIntuition - personality2.sensingIntuition,
+      ),
       tf: Math.abs(personality1.thinkingFeeling - personality2.thinkingFeeling),
-      jp: Math.abs(personality1.judgingPerceiving - personality2.judgingPerceiving),
+      jp: Math.abs(
+        personality1.judgingPerceiving - personality2.judgingPerceiving,
+      ),
     };
 
     // Convert differences to compatibility score (0-100)
-    const totalDifference = Object.values(differences).reduce((sum, diff) => sum + diff, 0);
-    return Math.max(0, 100 - (totalDifference * 12.5)); // 12.5 = 100 / (4 * 2)
+    const totalDifference = Object.values(differences).reduce(
+      (sum, diff) => sum + diff,
+      0,
+    );
+    return Math.max(0, 100 - totalDifference * 12.5); // 12.5 = 100 / (4 * 2)
   }
 
-  private calculateBigFiveCompatibility(personality1: Personality, personality2: Personality): number {
+  private calculateBigFiveCompatibility(
+    personality1: Personality,
+    personality2: Personality,
+  ): number {
     // Calculate difference for each Big Five trait
     const differences = {
       o: Math.abs(personality1.openness - personality2.openness),
-      c: Math.abs(personality1.conscientiousness - personality2.conscientiousness),
+      c: Math.abs(
+        personality1.conscientiousness - personality2.conscientiousness,
+      ),
       e: Math.abs(personality1.extraversion - personality2.extraversion),
       a: Math.abs(personality1.agreeableness - personality2.agreeableness),
       n: Math.abs(personality1.neuroticism - personality2.neuroticism),
     };
 
     // Convert differences to compatibility score (0-100)
-    const totalDifference = Object.values(differences).reduce((sum, diff) => sum + diff, 0);
-    return Math.max(0, 100 - (totalDifference * 10)); // 10 = 100 / (5 * 2)
+    const totalDifference = Object.values(differences).reduce(
+      (sum, diff) => sum + diff,
+      0,
+    );
+    return Math.max(0, 100 - totalDifference * 10); // 10 = 100 / (5 * 2)
   }
-} 
+}

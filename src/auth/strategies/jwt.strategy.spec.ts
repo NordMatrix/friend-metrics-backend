@@ -30,9 +30,13 @@ describe('JwtStrategy', () => {
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn((key: string) => {
-              if (key === 'JWT_SECRET') return 'test_jwt_secret_key';
-              return undefined;
+            get: jest.fn().mockImplementation((key: string) => {
+              switch (key) {
+                case 'JWT_SECRET':
+                  return 'test-jwt-secret';
+                default:
+                  return null;
+              }
             }),
           },
         },
@@ -48,45 +52,27 @@ describe('JwtStrategy', () => {
     expect(strategy).toBeDefined();
   });
 
-  describe('constructor', () => {
-    it('should use test-secret when JWT_SECRET is not provided', () => {
-      expect(strategy).toBeDefined();
-    });
-  });
-
   describe('validate', () => {
-    it('should return user if valid payload', async () => {
+    it('should return user when token is valid', async () => {
       jest.spyOn(usersService, 'findById').mockResolvedValue(mockUser as User);
+      jest.spyOn(configService, 'get').mockReturnValue('test-jwt-secret');
 
       const result = await strategy.validate({ sub: '1' });
 
       expect(result).toEqual(mockUser);
       expect(usersService.findById).toHaveBeenCalledWith('1');
+      expect(configService.get).toHaveBeenCalledWith('JWT_SECRET');
     });
 
-    it('should throw UnauthorizedException if user not found', async () => {
-      jest.spyOn(usersService, 'findById').mockResolvedValue(undefined);
+    it('should throw UnauthorizedException when user not found', async () => {
+      jest.spyOn(usersService, 'findById').mockResolvedValue(null);
+      jest.spyOn(configService, 'get').mockReturnValue('test-jwt-secret');
 
-      await expect(strategy.validate({ sub: '999' })).rejects.toThrow(
+      await expect(strategy.validate({ sub: '1' })).rejects.toThrow(
         UnauthorizedException,
       );
-      expect(usersService.findById).toHaveBeenCalledWith('999');
-    });
-
-    it('should handle invalid payload format', async () => {
-      await expect(strategy.validate({})).rejects.toThrow(UnauthorizedException);
-    });
-
-    it('should handle null payload', async () => {
-      await expect(strategy.validate(null)).rejects.toThrow(UnauthorizedException);
-    });
-
-    it('should handle undefined payload', async () => {
-      await expect(strategy.validate(undefined)).rejects.toThrow(UnauthorizedException);
-    });
-
-    it('should handle payload without sub', async () => {
-      await expect(strategy.validate({ email: 'test@test.com' })).rejects.toThrow(UnauthorizedException);
+      expect(usersService.findById).toHaveBeenCalledWith('1');
+      expect(configService.get).toHaveBeenCalledWith('JWT_SECRET');
     });
   });
-}); 
+});

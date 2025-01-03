@@ -82,4 +82,4 @@ describe('CreateInteractionDto', () => {
     expect(errors.length).toBeGreaterThan(0);
     expect(errors[0].property).toBe('metadata');
   });
-}); 
+});

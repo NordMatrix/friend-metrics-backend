@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Personality } from '../../personality/entities/personality.entity';
 import { Interaction } from '../../interactions/entities/interaction.entity';
@@ -29,9 +38,11 @@ export class Friend {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => Personality, (personality) => personality.friend, { nullable: true })
+  @OneToOne(() => Personality, (personality) => personality.friend, {
+    nullable: true,
+  })
   personality: Personality | null;
 
   @OneToMany(() => Interaction, (interaction) => interaction.friend)
   interactions: Interaction[];
-} 
+}

@@ -29,4 +29,4 @@ describe('Interaction Entity', () => {
     interaction.metadata = null;
     expect(interaction.metadata).toBeNull();
   });
-}); 
+});

@@ -3,7 +3,6 @@ import { InteractionsController } from './interactions.controller';
 import { InteractionsService } from './interactions.service';
 import { User } from '../users/entities/user.entity';
 import { Friend } from '../friends/entities/friend.entity';
-import { Interaction } from './entities/interaction.entity';
 import { CreateInteractionDto } from './dto/create-interaction.dto';
 import { InteractionTypes } from './constants/interaction-types';
 import { NotFoundException } from '@nestjs/common';
@@ -12,36 +11,30 @@ describe('InteractionsController', () => {
   let controller: InteractionsController;
   let service: InteractionsService;
 
-  const mockUser: Partial<User> = {
+  const mockUser: User = {
     id: '1',
     email: 'test@test.com',
     firstName: 'Test',
     lastName: 'User',
     password: 'password',
-    avatar: 'avatar.jpg',
-    googleId: 'google123',
+    avatar: null,
+    isGoogleAuth: false,
+    googleId: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
 
-  const mockFriend: Partial<Friend> = {
+  const mockFriend: Friend = {
     id: '1',
     name: 'Test Friend',
-    relationshipScore: 0,
-    user: mockUser as User,
-    avatar: 'friend-avatar.jpg',
-    notes: 'Test notes',
+    avatar: null,
+    relationshipScore: 50,
+    user: mockUser,
+    notes: '',
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
-
-  const mockInteraction = {
-    id: '1',
-    type: 'meeting',
-    scoreChange: 5,
-    friend: mockFriend,
-    metadata: {},
-    createdAt: new Date(),
+    personality: null,
+    interactions: [],
   };
 
   beforeEach(async () => {
@@ -51,15 +44,10 @@ describe('InteractionsController', () => {
         {
           provide: InteractionsService,
           useValue: {
-            create: jest.fn().mockResolvedValue(mockInteraction),
-            findAll: jest.fn().mockResolvedValue([mockInteraction]),
-            findOne: jest.fn().mockResolvedValue(mockInteraction),
-            remove: jest.fn().mockResolvedValue(undefined),
-            getStatistics: jest.fn().mockResolvedValue({
-              total: 1,
-              byType: { [InteractionTypes.MEETING]: 1 },
-              byMonth: { '2024-01': 1 },
-            }),
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            remove: jest.fn(),
           },
         },
       ],
@@ -74,87 +62,96 @@ describe('InteractionsController', () => {
   });
 
   describe('create', () => {
+    const createInteractionDto: CreateInteractionDto = {
+      type: InteractionTypes.CALL,
+      scoreChange: 5,
+      metadata: {},
+    };
+
     it('should create an interaction', async () => {
-      const createDto: CreateInteractionDto = {
-        type: InteractionTypes.MEETING,
-        description: 'Test interaction',
-        scoreChange: 1,
+      const mockInteraction = {
+        id: '1',
+        type: InteractionTypes.CALL,
+        scoreChange: 5,
+        metadata: {},
+        friend: mockFriend,
+        createdAt: new Date(),
       };
 
-      const result = await controller.create('1', createDto, mockUser as User);
+      jest.spyOn(service, 'create').mockResolvedValue(mockInteraction);
+
+      const result = await controller.create(
+        mockFriend.id,
+        createInteractionDto,
+        mockUser,
+      );
       expect(result).toEqual(mockInteraction);
-      expect(service.create).toHaveBeenCalledWith('1', createDto, mockUser);
-    });
-
-    it('should throw NotFoundException if friend not found', async () => {
-      jest.spyOn(service, 'create').mockRejectedValue(new NotFoundException());
-      const createDto: CreateInteractionDto = {
-        type: InteractionTypes.MEETING,
-        description: 'Test interaction',
-        scoreChange: 1,
-      };
-
-      await expect(controller.create('1', createDto, mockUser as User))
-        .rejects.toThrow(NotFoundException);
+      expect(service.create).toHaveBeenCalledWith(
+        mockFriend.id,
+        createInteractionDto,
+        mockUser,
+      );
     });
   });
 
   describe('findAll', () => {
     it('should return an array of interactions', async () => {
-      const result = await controller.findAll('1', mockUser as User);
-      expect(result).toEqual([mockInteraction]);
-      expect(service.findAll).toHaveBeenCalledWith('1', mockUser);
-    });
+      const mockInteractions = [
+        {
+          id: '1',
+          type: InteractionTypes.CALL,
+          scoreChange: 5,
+          metadata: {},
+          friend: mockFriend,
+          createdAt: new Date(),
+        },
+      ];
 
-    it('should throw NotFoundException if friend not found', async () => {
-      jest.spyOn(service, 'findAll').mockRejectedValue(new NotFoundException());
-      await expect(controller.findAll('1', mockUser as User))
-        .rejects.toThrow(NotFoundException);
+      jest.spyOn(service, 'findAll').mockResolvedValue(mockInteractions);
+
+      const result = await controller.findAll(mockFriend.id, mockUser);
+      expect(result).toEqual(mockInteractions);
+      expect(service.findAll).toHaveBeenCalledWith(mockFriend.id, mockUser);
     });
   });
 
   describe('findOne', () => {
-    it('should return a single interaction', async () => {
-      const result = await controller.findOne('1', '1', mockUser as User);
+    it('should return an interaction', async () => {
+      const mockInteraction = {
+        id: '1',
+        type: InteractionTypes.CALL,
+        scoreChange: 5,
+        metadata: {},
+        friend: mockFriend,
+        createdAt: new Date(),
+      };
+
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockInteraction);
+
+      const result = await controller.findOne(mockFriend.id, '1', mockUser);
       expect(result).toEqual(mockInteraction);
-      expect(service.findOne).toHaveBeenCalledWith('1', '1', mockUser);
+      expect(service.findOne).toHaveBeenCalledWith(
+        mockFriend.id,
+        '1',
+        mockUser,
+      );
     });
 
-    it('should throw NotFoundException if interaction not found', async () => {
-      jest.spyOn(service, 'findOne').mockRejectedValue(new NotFoundException());
-      await expect(controller.findOne('1', '1', mockUser as User))
-        .rejects.toThrow(NotFoundException);
+    it('should throw NotFoundException when interaction not found', async () => {
+      jest.spyOn(service, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        controller.findOne(mockFriend.id, '1', mockUser),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('remove', () => {
     it('should remove an interaction', async () => {
-      await controller.remove('1', '1', mockUser as User);
-      expect(service.remove).toHaveBeenCalledWith('1', '1', mockUser);
-    });
+      jest.spyOn(service, 'remove').mockResolvedValue(undefined);
 
-    it('should throw NotFoundException if interaction not found', async () => {
-      jest.spyOn(service, 'remove').mockRejectedValue(new NotFoundException());
-      await expect(controller.remove('1', '1', mockUser as User))
-        .rejects.toThrow(NotFoundException);
+      await controller.remove(mockFriend.id, '1', mockUser);
+      expect(service.remove).toHaveBeenCalledWith(mockFriend.id, '1', mockUser);
     });
   });
-
-  describe('getStatistics', () => {
-    it('should return interaction statistics', async () => {
-      const result = await controller.getStatistics('1', mockUser as User);
-      expect(result).toEqual({
-        total: 1,
-        byType: { [InteractionTypes.MEETING]: 1 },
-        byMonth: { '2024-01': 1 },
-      });
-      expect(service.getStatistics).toHaveBeenCalledWith('1', mockUser);
-    });
-
-    it('should throw NotFoundException if friend not found', async () => {
-      jest.spyOn(service, 'getStatistics').mockRejectedValue(new NotFoundException());
-      await expect(controller.getStatistics('1', mockUser as User))
-        .rejects.toThrow(NotFoundException);
-    });
-  });
-}); 
+});

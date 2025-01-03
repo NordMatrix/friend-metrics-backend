@@ -16,4 +16,4 @@ export const TEST_CONSTANTS = {
     EMAIL: 'test@example.com',
     PASSWORD: 'test-password',
   },
-} as const; 
+} as const;

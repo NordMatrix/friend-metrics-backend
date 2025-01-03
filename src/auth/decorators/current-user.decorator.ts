@@ -7,4 +7,4 @@ export const getCurrentUser = (data: unknown, ctx: ExecutionContext) => {
   return request?.user;
 };
 
-export const CurrentUser = createParamDecorator(getCurrentUser); 
+export const CurrentUser = createParamDecorator(getCurrentUser);

@@ -6,10 +6,7 @@ import { InteractionsController } from './interactions.controller';
 import { FriendsModule } from '../friends/friends.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Interaction]),
-    FriendsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Interaction]), FriendsModule],
   providers: [InteractionsService],
   controllers: [InteractionsController],
   exports: [InteractionsService],

@@ -7,4 +7,4 @@ export class UpdateScoreDto {
   @Min(-100)
   @Max(100)
   scoreChange: number;
-} 
+}

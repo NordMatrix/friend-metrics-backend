@@ -100,4 +100,4 @@ describe('AuthController', () => {
       expect(service.googleLogin).toHaveBeenCalledWith(mockRequest.user);
     });
   });
-}); 
+});

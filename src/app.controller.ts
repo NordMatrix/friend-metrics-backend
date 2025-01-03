@@ -8,13 +8,13 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @ApiOperation({ summary: 'Health check endpoint' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'API is working correctly',
     schema: {
       type: 'string',
-      example: 'Hello World!'
-    }
+      example: 'Hello World!',
+    },
   })
   @Get()
   getHello(): string {

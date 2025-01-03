@@ -5,7 +5,6 @@ import { Interaction } from './entities/interaction.entity';
 import { CreateInteractionDto } from './dto/create-interaction.dto';
 import { FriendsService } from '../friends/friends.service';
 import { User } from '../users/entities/user.entity';
-import { UpdateScoreDto } from '../friends/dto/update-score.dto';
 
 @Injectable()
 export class InteractionsService {
@@ -15,26 +14,35 @@ export class InteractionsService {
     private readonly friendsService: FriendsService,
   ) {}
 
-  async create(friendId: string, createInteractionDto: CreateInteractionDto, user: User): Promise<Interaction> {
+  async create(
+    friendId: string,
+    createInteractionDto: CreateInteractionDto,
+    user: User,
+  ): Promise<Interaction> {
     const friend = await this.friendsService.findOne(friendId, user);
+    if (!friend) {
+      throw new NotFoundException('Friend not found');
+    }
 
     const interaction = this.interactionRepository.create({
       ...createInteractionDto,
       friend,
     });
 
-    await this.interactionRepository.save(interaction);
+    await this.friendsService.updateScore(
+      friendId,
+      { scoreChange: createInteractionDto.scoreChange },
+      user,
+    );
 
-    // Update friend's relationship score
-    await this.friendsService.updateScore(friendId, {
-      scoreChange: interaction.scoreChange,
-    }, user);
-
-    return interaction;
+    return this.interactionRepository.save(interaction);
   }
 
   async findAll(friendId: string, user: User): Promise<Interaction[]> {
-    await this.friendsService.findOne(friendId, user);
+    const friend = await this.friendsService.findOne(friendId, user);
+    if (!friend) {
+      throw new NotFoundException('Friend not found');
+    }
 
     return this.interactionRepository.find({
       where: { friend: { id: friendId } },
@@ -42,8 +50,15 @@ export class InteractionsService {
     });
   }
 
-  async findOne(id: string, friendId: string, user: User): Promise<Interaction> {
-    await this.friendsService.findOne(friendId, user);
+  async findOne(
+    friendId: string,
+    id: string,
+    user: User,
+  ): Promise<Interaction> {
+    const friend = await this.friendsService.findOne(friendId, user);
+    if (!friend) {
+      throw new NotFoundException('Friend not found');
+    }
 
     const interaction = await this.interactionRepository.findOne({
       where: { id, friend: { id: friendId } },
@@ -56,38 +71,59 @@ export class InteractionsService {
     return interaction;
   }
 
-  async remove(id: string, friendId: string, user: User): Promise<void> {
-    const interaction = await this.findOne(id, friendId, user);
-    
-    // Update friend's relationship score before deletion
-    await this.friendsService.updateScore(friendId, {
-      scoreChange: -interaction.scoreChange,
-    }, user);
-    
-    await this.interactionRepository.remove(interaction);
+  async remove(friendId: string, id: string, user: User): Promise<void> {
+    const friend = await this.friendsService.findOne(friendId, user);
+    if (!friend) {
+      throw new NotFoundException('Friend not found');
+    }
+
+    const interaction = await this.interactionRepository.findOne({
+      where: { id, friend: { id: friendId } },
+    });
+
+    if (!interaction) {
+      throw new NotFoundException('Interaction not found');
+    }
+
+    await this.interactionRepository.delete({ id, friend: { id: friendId } });
   }
 
-  async getStatistics(friendId: string, user: User) {
+  async getStatistics(
+    friendId: string,
+    user: User,
+  ): Promise<{
+    total: number;
+    byType: Record<string, number>;
+    byMonth: Record<string, number>;
+  }> {
     const friend = await this.friendsService.findOne(friendId, user);
+    if (!friend) {
+      throw new NotFoundException('Friend not found');
+    }
+
     const interactions = await this.interactionRepository.find({
       where: { friend: { id: friendId } },
+      order: { createdAt: 'DESC' },
     });
 
     const total = interactions.length;
-    
-    // Count by type
-    const byType = interactions.reduce((acc, interaction) => {
-      acc[interaction.type] = (acc[interaction.type] || 0) + 1;
-      return acc;
-    }, {});
-    
-    // Count by month
-    const byMonth = interactions.reduce((acc, interaction) => {
-      const month = interaction.createdAt.toISOString().slice(0, 7); // YYYY-MM format
-      acc[month] = (acc[month] || 0) + 1;
-      return acc;
-    }, {});
-    
+    const byType = interactions.reduce(
+      (acc, interaction) => {
+        acc[interaction.type] = (acc[interaction.type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const byMonth = interactions.reduce(
+      (acc, interaction) => {
+        const monthKey = interaction.createdAt.toISOString().slice(0, 7); // YYYY-MM
+        acc[monthKey] = (acc[monthKey] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
     return { total, byType, byMonth };
   }
-} 
+}

@@ -53,4 +53,4 @@ describe('JwtAuthGuard', () => {
     const result = await guard.canActivate(mockExecutionContext);
     expect(result).toBe(true);
   });
-}); 
+});

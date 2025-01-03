@@ -11,4 +11,4 @@ export class CreateFriendDto {
   @IsString()
   @IsOptional()
   notes?: string;
-} 
+}

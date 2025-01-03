@@ -57,4 +57,4 @@ export class CreatePersonalityDto {
   @Min(0)
   @Max(100)
   neuroticism: number;
-} 
+}

@@ -14,5 +14,5 @@ export const dbConfig: ConnectionOptions = {
   logging: process.env.NODE_ENV !== 'production',
   entities: [__dirname + '/../entities/**/*.{ts,js}'],
   migrations: [__dirname + '/../migrations/**/*.{ts,js}'],
-  subscribers: [__dirname + '/../subscribers/**/*.{ts,js}']
-}; 
+  subscribers: [__dirname + '/../subscribers/**/*.{ts,js}'],
+};

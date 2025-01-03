@@ -130,8 +130,12 @@ describe('UsersService', () => {
         googleId: 'google123',
       };
 
-      jest.spyOn(repository, 'create').mockReturnValue({ ...mockUser, googleId: 'google123' } as User);
-      jest.spyOn(repository, 'save').mockResolvedValue({ ...mockUser, googleId: 'google123' } as User);
+      jest
+        .spyOn(repository, 'create')
+        .mockReturnValue({ ...mockUser, googleId: 'google123' } as User);
+      jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue({ ...mockUser, googleId: 'google123' } as User);
 
       const result = await service.create(googleUserData);
 
@@ -143,7 +147,10 @@ describe('UsersService', () => {
 
   describe('validatePassword', () => {
     it('should return true for valid password', async () => {
-      const result = await service.validatePassword(mockUser as User, 'password');
+      const result = await service.validatePassword(
+        mockUser as User,
+        'password',
+      );
 
       expect(result).toBe(true);
       expect(bcrypt.compare).toHaveBeenCalledWith('password', 'hashedPassword');
@@ -152,10 +159,16 @@ describe('UsersService', () => {
     it('should return false for invalid password', async () => {
       (bcrypt.compare as jest.Mock).mockResolvedValueOnce(false);
 
-      const result = await service.validatePassword(mockUser as User, 'wrongpassword');
+      const result = await service.validatePassword(
+        mockUser as User,
+        'wrongpassword',
+      );
 
       expect(result).toBe(false);
-      expect(bcrypt.compare).toHaveBeenCalledWith('wrongpassword', 'hashedPassword');
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        'wrongpassword',
+        'hashedPassword',
+      );
     });
   });
-}); 
+});

@@ -25,10 +25,11 @@ export function getMBTIType(personality: {
   thinkingFeeling: number;
   judgingPerceiving: number;
 }): string {
-  const ei = personality.extroversionIntroversion > EI_THRESHOLD ? E_TYPE : I_TYPE;
+  const ei =
+    personality.extroversionIntroversion > EI_THRESHOLD ? E_TYPE : I_TYPE;
   const sn = personality.sensingIntuition > SN_THRESHOLD ? S_TYPE : N_TYPE;
   const tf = personality.thinkingFeeling > TF_THRESHOLD ? T_TYPE : F_TYPE;
   const jp = personality.judgingPerceiving > JP_THRESHOLD ? J_TYPE : P_TYPE;
 
   return `${ei}${sn}${tf}${jp}`;
-} 
+}
