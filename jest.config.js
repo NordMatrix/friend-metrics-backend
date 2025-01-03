@@ -9,5 +9,8 @@ module.exports = {
   coverageDirectory: './coverage',
   testEnvironment: 'node',
   roots: ['<rootDir>/src/'],
-  setupFiles: ['<rootDir>/test/jest-setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/src/$1',
+  },
 }; 
