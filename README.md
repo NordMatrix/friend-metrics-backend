@@ -94,6 +94,13 @@ API documentation is available via Swagger UI at `/api/docs` when running the se
 
 ## 🧪 Testing
 
+1. Set up test environment:
+```bash
+cp .env.test.example .env.test
+# Edit .env.test if needed
+```
+
+2. Run tests:
 ```bash
 # Unit tests
 npm run test
@@ -104,6 +111,8 @@ npm run test:e2e
 # Test coverage
 npm run test:cov
 ```
+
+Note: Make sure your PostgreSQL server is running and the credentials in `.env.test` match your test database configuration.
 
 ## 🏗️ Architecture
 
