@@ -1,0 +1,16 @@
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+- jekyll-remote-theme
+
+title: Friend Metrics Documentation
+description: Documentation for Friend Metrics - a system for tracking and analyzing friendships
+show_downloads: true
+google_analytics:
+theme: jekyll-theme-cayman
+
+# Navigation
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - API Reference: api-reference.md
+  - Contributing: ../CONTRIBUTING.md 
