@@ -62,7 +62,7 @@ export class FriendsService {
   }
 
   async remove(id: string, user: User): Promise<void> {
-    const friend = await this.findOne(id, user);
+    await this.findOne(id, user);
     await this.friendRepository.delete({ id, user: { id: user.id } });
   }
 
@@ -74,7 +74,9 @@ export class FriendsService {
     const friend = await this.findOne(id, user);
 
     if (updateScoreDto.scoreChange < -100 || updateScoreDto.scoreChange > 100) {
-      throw new BadRequestException('Score change must be between -100 and 100');
+      throw new BadRequestException(
+        'Score change must be between -100 and 100',
+      );
     }
 
     const newScore = friend.relationshipScore + updateScoreDto.scoreChange;

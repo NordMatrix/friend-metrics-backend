@@ -192,7 +192,9 @@ describe('FriendsService', () => {
   describe('remove', () => {
     it('should remove a friend', async () => {
       jest.spyOn(friendRepository, 'findOne').mockResolvedValue(mockFriend);
-      jest.spyOn(friendRepository, 'delete').mockResolvedValue({ affected: 1, raw: [] });
+      jest
+        .spyOn(friendRepository, 'delete')
+        .mockResolvedValue({ affected: 1, raw: [] });
 
       await service.remove('1', mockUser);
       expect(friendRepository.delete).toHaveBeenCalledWith({

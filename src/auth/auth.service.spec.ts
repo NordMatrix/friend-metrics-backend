@@ -64,7 +64,7 @@ describe('AuthService', () => {
       });
 
       expect(result.token).toBe('test.jwt.token');
-      expect(jwtService.sign).toHaveBeenCalledWith({ 
+      expect(jwtService.sign).toHaveBeenCalledWith({
         sub: mockUser.id,
         email: mockUser.email,
       });
@@ -110,7 +110,7 @@ describe('AuthService', () => {
       });
 
       expect(result.token).toBe('test.jwt.token');
-      expect(jwtService.sign).toHaveBeenCalledWith({ 
+      expect(jwtService.sign).toHaveBeenCalledWith({
         sub: mockUser.id,
         email: mockUser.email,
       });
