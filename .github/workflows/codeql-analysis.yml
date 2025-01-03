@@ -19,11 +19,11 @@ jobs:
 
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: friend_metrics_test
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
         ports:
           - 5432:5432
         options: >-
@@ -59,9 +59,12 @@ jobs:
       env:
         DB_HOST: localhost
         DB_PORT: 5432
-        DB_USERNAME: postgres
-        DB_PASSWORD: postgres
-        DB_NAME: friend_metrics_test
+        DB_USERNAME: test_user
+        DB_PASSWORD: test_password
+        DB_NAME: test_db
+        JWT_SECRET: test_secret
+        GOOGLE_CLIENT_ID: test_client_id
+        GOOGLE_CLIENT_SECRET: test_client_secret
         NODE_ENV: test
 
     - name: Perform CodeQL Analysis
