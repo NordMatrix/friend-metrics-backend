@@ -92,6 +92,7 @@ describe('FriendsService', () => {
       expect(result).toEqual(friends);
       expect(friendRepository.find).toHaveBeenCalledWith({
         where: { user: { id: mockUser.id } },
+        relations: ['personality'],
       });
     });
   });
@@ -104,6 +105,7 @@ describe('FriendsService', () => {
       expect(result).toEqual(mockFriend);
       expect(friendRepository.findOne).toHaveBeenCalledWith({
         where: { id: '1', user: { id: mockUser.id } },
+        relations: ['personality'],
       });
     });
 
@@ -190,9 +192,7 @@ describe('FriendsService', () => {
   describe('remove', () => {
     it('should remove a friend', async () => {
       jest.spyOn(friendRepository, 'findOne').mockResolvedValue(mockFriend);
-      jest
-        .spyOn(friendRepository, 'delete')
-        .mockResolvedValue({ affected: 1, raw: [] });
+      jest.spyOn(friendRepository, 'delete').mockResolvedValue({ affected: 1, raw: [] });
 
       await service.remove('1', mockUser);
       expect(friendRepository.delete).toHaveBeenCalledWith({

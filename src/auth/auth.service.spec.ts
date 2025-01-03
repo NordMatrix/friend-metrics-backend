@@ -64,7 +64,10 @@ describe('AuthService', () => {
       });
 
       expect(result.token).toBe('test.jwt.token');
-      expect(jwtService.sign).toHaveBeenCalledWith({ sub: mockUser.id });
+      expect(jwtService.sign).toHaveBeenCalledWith({ 
+        sub: mockUser.id,
+        email: mockUser.email,
+      });
     });
 
     it('should throw UnauthorizedException when user not found', async () => {
@@ -107,7 +110,10 @@ describe('AuthService', () => {
       });
 
       expect(result.token).toBe('test.jwt.token');
-      expect(jwtService.sign).toHaveBeenCalledWith({ sub: mockUser.id });
+      expect(jwtService.sign).toHaveBeenCalledWith({ 
+        sub: mockUser.id,
+        email: mockUser.email,
+      });
     });
 
     it('should throw ConflictException when email already exists', async () => {

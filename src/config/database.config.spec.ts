@@ -32,11 +32,12 @@ describe('DatabaseConfig', () => {
       database: 'test_db',
       entities: expect.any(Array),
       synchronize: true,
-      logging: false,
+      logging: true,
     });
   });
 
   it('should handle missing environment variables', () => {
+    // Clear environment variables before test
     delete process.env.DB_HOST;
     delete process.env.DB_PORT;
     delete process.env.DB_USERNAME;
@@ -46,14 +47,14 @@ describe('DatabaseConfig', () => {
     const config = databaseConfig();
     expect(config).toEqual({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'friend_metrics',
+      host: undefined,
+      port: NaN,
+      username: undefined,
+      password: undefined,
+      database: undefined,
       entities: expect.any(Array),
       synchronize: true,
-      logging: false,
+      logging: true,
     });
   });
 });

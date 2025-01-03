@@ -138,7 +138,7 @@ describe('InteractionsController', () => {
     });
 
     it('should throw NotFoundException when interaction not found', async () => {
-      jest.spyOn(service, 'findOne').mockResolvedValue(null);
+      jest.spyOn(service, 'findOne').mockRejectedValue(new NotFoundException());
 
       await expect(
         controller.findOne(mockFriend.id, '1', mockUser),
