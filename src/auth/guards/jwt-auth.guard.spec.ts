@@ -1,5 +1,6 @@
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ExecutionContext } from '@nestjs/common';
+import { TEST_CONSTANTS } from '../constants/test.constants';
 
 jest.mock('@nestjs/passport', () => {
   class MockAuthGuard {
@@ -23,7 +24,7 @@ describe('JwtAuthGuard', () => {
       switchToHttp: jest.fn().mockReturnValue({
         getRequest: jest.fn().mockReturnValue({
           headers: {
-            authorization: 'Bearer valid-token',
+            authorization: `Bearer ${TEST_CONSTANTS.JWT.TOKEN}`,
           },
         }),
         getResponse: jest.fn(),
