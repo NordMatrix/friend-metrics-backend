@@ -1,156 +1,141 @@
-# Friend Metrics API
+# Friend Metrics 🤝
 
-Backend part of the Friend Metrics application - a system for tracking and improving relationships with friends. The API is built with NestJS using TypeScript and provides a comprehensive toolkit for managing social connections.
+[![Build Status](https://github.com/NordMatrix/friend-metrics-backend/actions/workflows/main.yml/badge.svg)](https://github.com/NordMatrix/friend-metrics-backend/actions)
+[![Code Coverage](https://codecov.io/gh/NordMatrix/friend-metrics-backend/branch/main/graph/badge.svg)](https://codecov.io/gh/NordMatrix/friend-metrics-backend)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-9.0.0-red)](https://nestjs.com/)
+
+Friend Metrics is an innovative platform for tracking and analyzing friendships using personality psychology frameworks like MBTI and Big Five. This backend service provides a robust API for managing friends, tracking interactions, and analyzing compatibility based on personality traits.
 
 ## 🌟 Features
 
-- **Friend Management**
-  - Create and edit friend profiles
-  - Track relationship scores
-  - Add and manage notes
+- **Authentication System**
+  - JWT-based authentication
+  - Google OAuth integration
+  - Secure password handling
 
-- **Interaction Tracking**
-  - Record various types of interactions
-  - Automatic relationship score impact calculation
-  - Interaction statistics by type and time
+- **Friend Management**
+  - CRUD operations for friends
+  - Relationship score tracking
+  - Notes and interaction history
 
 - **Personality Analysis**
   - MBTI personality type assessment
-  - Big Five model analysis
-  - Friend compatibility calculation
+  - Big Five personality traits tracking
+  - Compatibility scoring algorithm
 
-- **Security**
-  - JWT authentication
-  - Google OAuth 2.0
-  - Protected endpoints
+- **Interaction Tracking**
+  - Various interaction types support
+  - Automatic score adjustments
+  - Interaction statistics and analytics
 
-## 🚀 Technologies
+- **Advanced Analytics**
+  - Personality compatibility calculations
+  - Friendship strength metrics
+  - Interaction patterns analysis
 
-- [NestJS](https://nestjs.com/) - progressive Node.js framework
-- [TypeScript](https://www.typescriptlang.org/) - typed JavaScript
-- [PostgreSQL](https://www.postgresql.org/) - relational database
-- [TypeORM](https://typeorm.io/) - TypeScript ORM
-- [Passport.js](http://www.passportjs.org/) - authentication
-- [Swagger](https://swagger.io/) - API documentation
+## 🚀 Quick Start
 
-## 📋 Requirements
+### Prerequisites
 
-- Node.js (version 16 or higher)
-- PostgreSQL (version 12 or higher)
+- Node.js (v16+)
+- PostgreSQL (v13+)
 - npm or yarn
 
-## 🛠 Installation
+### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/NordMatrix/friend-metrics-backend.git
-   cd friend-metrics-backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment**
-   ```bash
-   cp .env.example .env
-   ```
-   Edit the `.env` file with your values for:
-   - Application port
-   - Database credentials
-   - JWT secret
-   - Google OAuth credentials
-
-4. **Create database**
-   ```bash
-   createdb friend_metrics_dev
-   ```
-
-5. **Run migrations**
-   ```bash
-   npm run migration:run
-   ```
-
-## 🚀 Running the app
-
-### Development
+1. Clone the repository:
 ```bash
-npm run start:dev
+git clone https://github.com/NordMatrix/friend-metrics-backend.git
+cd friend-metrics-backend
 ```
 
-### Production
+2. Install dependencies:
 ```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+4. Run database migrations:
+```bash
+npm run migration:run
+```
+
+5. Start the server:
+```bash
+# Development
+npm run start:dev
+
+# Production
 npm run build
 npm run start:prod
 ```
 
-### Tests
+## 📚 API Documentation
+
+API documentation is available via Swagger UI at `/api/docs` when running the server.
+
+### Key Endpoints
+
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login user
+- `GET /auth/google` - Google OAuth login
+- `POST /friends` - Add new friend
+- `GET /friends` - List all friends
+- `POST /friends/:id/personality` - Add personality profile
+- `GET /friends/:id/compatibility/:targetId` - Get compatibility score
+- `POST /friends/:id/interactions` - Record new interaction
+
+## 🧪 Testing
+
 ```bash
-# unit tests
+# Unit tests
 npm run test
 
-# e2e tests
+# E2E tests
 npm run test:e2e
 
-# test coverage
+# Test coverage
 npm run test:cov
 ```
 
-## 📚 API Documentation
+## 🏗️ Architecture
 
-After starting the application, Swagger documentation is available at:
+The application follows a modular architecture based on NestJS framework:
+
 ```
-http://localhost:3001/api
+src/
+├── auth/           # Authentication module
+├── friends/        # Friend management
+├── personality/    # Personality analysis
+├── interactions/   # Interaction tracking
+├── users/         # User management
+└── config/        # Configuration
 ```
-
-### Main Endpoints:
-
-- **Auth** (`/auth`)
-  - POST `/register` - register new user
-  - POST `/login` - user login
-  - GET `/google` - Google OAuth authentication
-
-- **Friends** (`/friends`)
-  - GET `/` - get friends list
-  - POST `/` - add new friend
-  - GET `/:id` - get friend details
-  - PATCH `/:id` - update friend
-  - DELETE `/:id` - delete friend
-  - PATCH `/:id/score` - update relationship score
-
-- **Interactions** (`/friends/:friendId/interactions`)
-  - GET `/` - get interactions list
-  - POST `/` - record new interaction
-  - GET `/statistics` - get statistics
-  - DELETE `/:id` - delete interaction
-
-- **Personality** (`/friends/:friendId/personality`)
-  - POST `/` - create personality profile
-  - GET `/` - get personality profile
-  - GET `/analysis` - get personality analysis
-  - GET `/mbti` - get MBTI type
-  - GET `/compatibility/:otherFriendId` - calculate compatibility
 
 ## 🤝 Contributing
 
-If you want to contribute to the project:
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+## 📈 Roadmap
 
-## 📝 License
+- [ ] Advanced friendship analytics
+- [ ] Machine learning for compatibility predictions
+- [ ] Real-time notifications
+- [ ] Friend groups and circles
+- [ ] Integration with social networks
+- [ ] Mobile app support
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ✨ Author
+## 🌟 Show your support
 
-NordMatrix - [GitHub](https://github.com/NordMatrix)
-
-## 🙏 Acknowledgments
-
-- [NestJS Team](https://nestjs.com/) for the amazing framework
-- [TypeORM Team](https://typeorm.io/) for the great database tools
-- All contributors who help improve this project
+Give a ⭐️ if this project helped you!
